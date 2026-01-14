@@ -4,9 +4,9 @@
 const ADMIN_PIN = "1972";  // رمز الأدمن
 const DELETE_PIN = "121";  // رمز الحذف
 let db = JSON.parse(localStorage.getItem('noorHusseinDB')) || { customers: [] };
-let activeCustomer = null; // الزبون المحدد حالياً في لوحة الأدمن
-let currentCart = [];      // سلة المشتريات الحالية
-let targetCustomerId = null; // معرف الزبون القادم من الرابط
+let activeCustomer = null; // الزبون المحدد حالياً
+let currentCart = [];      // سلة المشتريات
+let targetCustomerId = null; // معرف الزبون للرابط
 
 // ==========================================
 // نقطة البداية (Boot Sequence)
@@ -16,36 +16,29 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 function initApp() {
-    // 1. إخفاء جميع الشاشات كإجراء احترازي أولي
     hideAllScreens();
-
-    // 2. تحليل الرابط لمعرفة نوع المستخدم
     const urlParams = new URLSearchParams(window.location.search);
     const linkedId = urlParams.get('id');
 
     if (linkedId) {
-        // --- مسار الزبون (Client Mode) ---
+        // --- مسار الزبون ---
         targetCustomerId = parseInt(linkedId);
         const customer = db.customers.find(c => c.id === targetCustomerId);
         
         if (customer) {
-            // الزبون موجود، ننتقل لشاشة تسجيل دخول الزبون
             document.getElementById('client-welcome-name').innerText = customer.name;
             showScreen('screen-client-login');
         } else {
-            // الرابط غير صالح
-            alert('عذراً، هذا الرابط غير صالح أو تم حذف حساب الزبون.');
-            // تنظيف الرابط في المتصفح والعودة للأدمن
+            alert('عذراً، الرابط غير صالح أو تم حذف الحساب.');
             window.history.replaceState({}, document.title, window.location.pathname);
             showScreen('screen-admin-login');
         }
     } else {
-        // --- مسار الأدمن (Admin Mode) ---
+        // --- مسار الأدمن ---
         showScreen('screen-admin-login');
     }
 }
 
-// دالة التنقل بين الشاشات الرئيسية
 function showScreen(screenId) {
     hideAllScreens();
     const screen = document.getElementById(screenId);
@@ -61,7 +54,7 @@ function hideAllScreens() {
 }
 
 // ==========================================
-// منطق الزبون (Client Logic)
+// منطق الزبون
 // ==========================================
 function checkClientLogin() {
     const pass = document.getElementById('clientPassInput').value;
@@ -87,7 +80,6 @@ function fillClientViewData(c) {
     const list = document.getElementById('cvTransList');
     list.innerHTML = '';
     
-    // عرض السجل (للقراءة فقط)
     [...c.transactions].reverse().forEach(t => {
         let details = '';
         if (t.type === 'sale') {
@@ -112,14 +104,12 @@ function fillClientViewData(c) {
 }
 
 // ==========================================
-// منطق الأدمن (Admin Logic)
+// منطق الأدمن
 // ==========================================
 function checkAdminLogin() {
     const pin = document.getElementById('adminPinInput').value;
     if (pin === ADMIN_PIN) {
         showScreen('screen-admin-app');
-        
-        // تشغيل شاشة الترحيب لمرة واحدة
         setTimeout(() => {
             const splash = document.getElementById('splash-screen');
             if(splash) {
@@ -127,7 +117,6 @@ function checkAdminLogin() {
                 setTimeout(() => splash.style.display = 'none', 1000);
             }
         }, 1200);
-        
         renderCustomerList();
     } else {
         alert("الرمز السري غير صحيح");
@@ -135,20 +124,22 @@ function checkAdminLogin() {
     }
 }
 
-// --- إدارة التبويبات الداخلية للأدمن ---
 function switchTab(tabId) {
-    // منع دخول صفحات البيع/التسديد/التقارير بدون اختيار زبون
     if ((tabId === 'tab-invoice' || tabId === 'tab-payment' || tabId === 'tab-reports') && !activeCustomer) {
         alert('الرجاء اختيار زبون من القائمة أولاً');
         switchTab('tab-customers');
         return;
     }
-
     document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
     document.getElementById(tabId).classList.add('active');
-
     document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
     document.querySelector(`[onclick="switchTab('${tabId}')"]`).classList.add('active');
+}
+
+// --- طباعة التقرير (جديد) ---
+function printCustomerReport() {
+    if (!activeCustomer) return alert('لا يوجد زبون محدد للطباعة');
+    window.print();
 }
 
 // --- إدارة الزبائن ---
@@ -159,8 +150,7 @@ function confirmAddCustomer() {
     const name = document.getElementById('newCName').value;
     const phone = document.getElementById('newCPhone').value;
     const pass = document.getElementById('newCPass').value;
-
-    if (!name || !pass) return alert("الاسم وكلمة المرور مطلوبان لإنشاء حساب");
+    if (!name || !pass) return alert("الاسم وكلمة المرور مطلوبان");
 
     const newC = {
         id: Date.now(),
@@ -171,56 +161,37 @@ function confirmAddCustomer() {
         totalPaid: 0,
         transactions: []
     };
-
     db.customers.push(newC);
     saveData();
     renderCustomerList();
-    
-    // تنظيف الحقول
     document.getElementById('newCName').value = '';
     document.getElementById('newCPhone').value = '';
     document.getElementById('newCPass').value = '';
     closeAddCustomerModal();
-    
-    // اختيار الزبون الجديد تلقائياً
     selectCustomer(newC.id);
 }
 
 function renderCustomerList(filterText = '') {
     const list = document.getElementById('customerListContainer');
     list.innerHTML = '';
-    
     const filtered = db.customers.filter(c => c.name.includes(filterText));
-    
     filtered.forEach(c => {
         const debt = c.totalSales - c.totalPaid;
         const div = document.createElement('div');
         div.className = 'customer-item';
         div.onclick = () => selectCustomer(c.id);
-        div.innerHTML = `
-            <div>
-                <strong>${c.name}</strong><br>
-                <small style="color:${debt > 0 ? 'red' : 'green'}">الدين: ${debt.toLocaleString()}</small>
-            </div>
-            <i class="fas fa-chevron-left" style="color:#ccc"></i>
-        `;
+        div.innerHTML = `<div><strong>${c.name}</strong><br><small style="color:${debt > 0 ? 'red' : 'green'}">الدين: ${debt.toLocaleString()}</small></div><i class="fas fa-chevron-left" style="color:#ccc"></i>`;
         list.appendChild(div);
     });
 }
 
-function filterCustomers() {
-    renderCustomerList(document.getElementById('customerSearchInput').value);
-}
+function filterCustomers() { renderCustomerList(document.getElementById('customerSearchInput').value); }
 
 function selectCustomer(id) {
     activeCustomer = db.customers.find(c => c.id === id);
     document.getElementById('headerCustomerName').innerText = activeCustomer.name;
-    
-    // توليد رابط المشاركة
     const baseUrl = window.location.href.split('?')[0];
-    const uniqueLink = `${baseUrl}?id=${activeCustomer.id}`;
-    document.getElementById('customerShareLink').value = uniqueLink;
-
+    document.getElementById('customerShareLink').value = `${baseUrl}?id=${activeCustomer.id}`;
     refreshAdminViews();
     switchTab('tab-invoice');
 }
@@ -235,31 +206,28 @@ function copyLink() {
     const linkInput = document.getElementById('customerShareLink');
     linkInput.select();
     document.execCommand("copy");
-    alert("تم نسخ الرابط! أرسله للزبون.");
+    alert("تم نسخ الرابط!");
 }
 
 function deleteCustomer() {
     if (!activeCustomer) return;
-    
-    const pin = prompt("للحذف النهائي، أدخل الرمز (121):");
+    const pin = prompt("للحذف النهائي (121):");
     if (pin === DELETE_PIN) {
         db.customers = db.customers.filter(c => c.id !== activeCustomer.id);
         saveData();
         clearSelection();
-        alert("تم حذف الزبون وسجلاته نهائياً.");
+        alert("تم حذف الزبون.");
     } else {
         alert("رمز الحذف خاطئ!");
     }
 }
 
-// --- عمليات البيع (السلة) ---
+// --- عمليات البيع ---
 function addItemToCart() {
     const name = document.getElementById('itemName').value;
     const price = parseFloat(document.getElementById('itemPrice').value);
     const qty = parseFloat(document.getElementById('itemQty').value);
-
-    if (!name || !price) return; // يجب أن يكون هناك اسم وسعر على الأقل
-
+    if (!name || !price) return;
     currentCart.push({ name, price, qty, total: price * qty });
     document.getElementById('itemName').value = '';
     document.getElementById('itemName').focus();
@@ -270,31 +238,17 @@ function renderCart() {
     const tbody = document.querySelector('#cartTable tbody');
     tbody.innerHTML = '';
     let total = 0;
-    
     currentCart.forEach((item, idx) => {
         total += item.total;
-        tbody.innerHTML += `
-            <tr>
-                <td>${item.name}</td>
-                <td>${item.price}</td>
-                <td>${item.qty}</td>
-                <td onclick="removeFromCart(${idx})" style="color:red; cursor:pointer; font-weight:bold;">X</td>
-            </tr>
-        `;
+        tbody.innerHTML += `<tr><td>${item.name}</td><td>${item.price}</td><td>${item.qty}</td><td onclick="removeFromCart(${idx})" style="color:red; cursor:pointer; font-weight:bold;">X</td></tr>`;
     });
     document.getElementById('cartTotal').innerText = total.toLocaleString();
 }
-
-function removeFromCart(idx) {
-    currentCart.splice(idx, 1);
-    renderCart();
-}
+function removeFromCart(idx) { currentCart.splice(idx, 1); renderCart(); }
 
 function saveInvoice() {
     if (currentCart.length === 0) return alert('السلة فارغة!');
-    
     const totalAmount = currentCart.reduce((sum, i) => sum + i.total, 0);
-    
     activeCustomer.totalSales += totalAmount;
     activeCustomer.transactions.push({
         type: 'sale',
@@ -302,11 +256,10 @@ function saveInvoice() {
         items: [...currentCart],
         amount: totalAmount
     });
-
     saveData();
     currentCart = [];
     renderCart();
-    alert('تم حفظ الفاتورة بنجاح');
+    alert('تم الحفظ');
     switchTab('tab-reports');
     refreshAdminViews();
 }
@@ -315,40 +268,33 @@ function saveInvoice() {
 function processPayment() {
     const amount = parseFloat(document.getElementById('paymentInput').value);
     if (!amount) return alert('أدخل المبلغ الواصل');
-
     activeCustomer.totalPaid += amount;
     activeCustomer.transactions.push({
         type: 'pay',
         date: new Date().toLocaleDateString('ar-EG') + ' ' + new Date().toLocaleTimeString('ar-EG', {hour:'2-digit', minute:'2-digit'}),
         amount: amount
     });
-
     saveData();
     document.getElementById('paymentInput').value = '';
-    alert('تم تسجيل التسديد');
+    alert('تم التسديد');
     refreshAdminViews();
 }
 
-// --- تحديث واجهة الأدمن ---
 function refreshAdminViews() {
     if (!activeCustomer) return;
-    
     const currentDebt = activeCustomer.totalSales - activeCustomer.totalPaid;
     document.getElementById('currentDebtDisplay').innerText = currentDebt.toLocaleString();
-    
     document.getElementById('repSales').innerText = activeCustomer.totalSales.toLocaleString();
     document.getElementById('repPaid').innerText = activeCustomer.totalPaid.toLocaleString();
     document.getElementById('repDebt').innerText = currentDebt.toLocaleString();
     
     const list = document.getElementById('transList');
     list.innerHTML = '';
-    
     [...activeCustomer.transactions].reverse().forEach(t => {
         let details = '';
         if (t.type === 'sale') {
             details = `<div style="font-size:11px; color:#666;">${t.items.map(i => i.name).join(' + ')}</div>`;
         }
-        
         list.innerHTML += `
             <div style="background:white; padding:10px; border-bottom:1px solid #eee; margin-bottom:5px;">
                 <div style="display:flex; justify-content:space-between; color:${t.type === 'sale' ? 'red' : 'green'}">
@@ -362,6 +308,4 @@ function refreshAdminViews() {
     });
 }
 
-function saveData() {
-    localStorage.setItem('noorHusseinDB', JSON.stringify(db));
-}
+function saveData() { localStorage.setItem('noorHusseinDB', JSON.stringify(db)); }
