@@ -1,131 +1,141 @@
+@import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&display=swap');
+
 :root {
-    --bg-color: #f4f7f6;
-    --primary: #007bff;     /* أزرق */
-    --success: #28a745;     /* أخضر */
-    --danger: #dc3545;      /* أحمر */
-    --warning: #ffc107;     /* أصفر */
-    --info: #17a2b8;        /* سماوي */
-    --dark: #343a40;
+    --primary: #2c3e50; /* كحلي غامق */
+    --accent: #d4af37;  /* ذهبي */
+    --bg: #f3f4f6;
+    --white: #ffffff;
+    --success: #27ae60;
+    --danger: #c0392b;
+    --text: #333;
 }
+
+* { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
 
 body {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background-color: var(--bg-color);
+    font-family: 'Cairo', sans-serif;
+    background-color: var(--bg);
     margin: 0;
-    padding: 10px;
+    padding: 0;
     direction: rtl;
+    padding-bottom: 70px; /* مساحة للبار السفلي */
+    padding-top: 50px; /* مساحة للهيدر العلوي */
 }
 
-.container {
-    max-width: 900px;
-    margin: 0 auto;
-    background: white;
-    padding: 20px;
-    border-radius: 8px;
-    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-}
-
-.section {
-    margin-bottom: 20px;
-    border-bottom: 1px solid #eee;
-    padding-bottom: 15px;
-}
-
-.row {
+/* --- Splash Screen --- */
+#splash-screen {
+    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+    background: linear-gradient(135deg, #1a1a2e, #16213e);
+    z-index: 9999;
     display: flex;
-    gap: 10px;
-    margin-bottom: 10px;
+    justify-content: center;
+    align-items: center;
+    color: var(--accent);
+    flex-direction: column;
+    transition: opacity 1s ease;
 }
 
+.glow-text {
+    font-size: 3rem;
+    text-shadow: 0 0 10px #d4af37, 0 0 20px #d4af37;
+    animation: pulse 2s infinite;
+}
+
+.loader {
+    width: 40px; height: 40px;
+    border: 4px solid #fff;
+    border-top: 4px solid var(--accent);
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin-top: 20px;
+}
+
+/* --- Layout --- */
+.app-header {
+    position: fixed; top: 0; left: 0; right: 0;
+    background: var(--primary); color: white;
+    padding: 10px 15px;
+    display: flex; justify-content: space-between; align-items: center;
+    z-index: 100;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+}
+
+.tab-content { display: none; padding: 15px; animation: fadeIn 0.3s; }
+.tab-content.active { display: block; }
+
+/* --- Inputs & Buttons --- */
 input {
-    padding: 10px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    flex: 1;
-    text-align: center;
-    font-size: 16px;
+    width: 100%; padding: 12px; margin-bottom: 10px;
+    border: 1px solid #ddd; border-radius: 8px;
+    font-family: inherit; font-size: 16px;
 }
 
-.search-box {
-    display: flex;
-    flex: 2;
-    gap: 5px;
-}
+.row-inputs { display: flex; gap: 10px; }
 
 button {
-    padding: 10px 15px;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    font-weight: bold;
-    color: white;
-    transition: 0.3s;
+    cursor: pointer; border: none; border-radius: 8px;
+    font-family: inherit; font-weight: bold; transition: 0.2s;
 }
 
-button:hover { opacity: 0.9; }
+.btn-add { width: 100%; background: var(--primary); color: white; padding: 12px; }
+.btn-save { width: 100%; background: var(--accent); color: #000; padding: 12px; }
+.btn-pay { width: 100%; background: var(--success); color: white; padding: 12px; }
+.btn-print { width: 48%; background: #34495e; color: white; padding: 10px; }
+.btn-backup { width: 48%; background: #7f8c8d; color: white; padding: 10px; }
+.btn-icon { padding: 0 15px; background: var(--accent); color: white; font-size: 1.2rem; }
+.btn-xs { padding: 5px 10px; font-size: 12px; background: rgba(255,255,255,0.2); color: white; }
 
-.btn-search { background-color: var(--primary); }
-.btn-add { background-color: var(--success); width: 100%; margin-top: 5px;}
-.btn-primary { background-color: var(--primary); }
-.btn-success { background-color: var(--success); }
-.btn-danger { background-color: var(--danger); }
-.btn-info { background-color: var(--info); }
-.btn-secondary { background-color: #6c757d; }
-.btn-warning { background-color: var(--warning); color: #000; }
-
-table {
-    width: 100%;
-    border-collapse: collapse;
-    margin-top: 10px;
+/* --- Bottom Nav --- */
+.bottom-nav {
+    position: fixed; bottom: 0; left: 0; right: 0;
+    background: white;
+    display: flex; justify-content: space-around;
+    padding: 10px 0;
+    box-shadow: 0 -2px 10px rgba(0,0,0,0.05);
+    border-top: 1px solid #eee;
 }
 
-table th, table td {
-    border: 1px solid #ddd;
-    padding: 8px;
-    text-align: center;
+.nav-item {
+    text-decoration: none; color: #999;
+    display: flex; flex-direction: column; align-items: center;
+    font-size: 12px; gap: 4px;
 }
 
-table th { background-color: #f8f9fa; }
+.nav-item i { font-size: 20px; }
+.nav-item.active { color: var(--primary); font-weight: bold; }
 
-.totals-section {
-    display: flex;
-    justify-content: space-between;
-    background: #e9ecef;
-    padding: 15px;
-    border-radius: 5px;
+/* --- Lists & Tables --- */
+.customer-item {
+    background: white; padding: 15px; border-radius: 10px;
+    margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.03);
 }
 
-.total-box {
-    text-align: center;
-}
+.customer-item:active { background-color: #f0f0f0; }
 
-.total-box label { display: block; margin-bottom: 5px; font-weight: bold; }
-.total-box input { font-weight: bold; color: var(--dark); background: #fff; }
-.danger-text { color: red !important; }
+table { width: 100%; border-collapse: collapse; background: white; border-radius: 8px; overflow: hidden; }
+th { background: #eee; padding: 10px; font-size: 14px; }
+td { padding: 10px; border-bottom: 1px solid #eee; text-align: center; }
 
-.action-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-    gap: 10px;
-}
+/* --- Dashboard Stats --- */
+.report-summary { display: flex; gap: 5px; margin-bottom: 20px; }
+.report-summary .box { flex: 1; padding: 10px; border-radius: 5px; text-align: center; color: white; font-size: 14px;}
+.box.sale { background: var(--primary); }
+.box.paid { background: var(--success); }
+.box.debt { background: var(--danger); }
 
-/* Modal Styling */
-.modal { display: none; position: fixed; z-index: 1; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.4); }
-.modal-content { background-color: #fefefe; margin: 15% auto; padding: 20px; border: 1px solid #888; width: 300px; text-align: center; border-radius: 8px;}
-.close { color: #aaa; float: left; font-size: 28px; font-weight: bold; cursor: pointer; }
+/* --- Keyframes --- */
+@keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+@keyframes pulse { 0% { opacity: 0.8; transform: scale(1); } 50% { opacity: 1; transform: scale(1.05); } 100% { opacity: 0.8; transform: scale(1); } }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
-/* للموبايل */
-@media (max-width: 600px) {
-    .row { flex-direction: column; }
-    .totals-section { flex-direction: column; gap: 10px; }
-}
+/* --- Install Bar --- */
+#install-bar { display: none; background: #333; color: white; padding: 10px; position: fixed; top: 60px; left: 10px; right: 10px; border-radius: 5px; z-index: 999; text-align: center; }
+#install-bar button { margin: 0 5px; padding: 5px 10px; }
 
 @media print {
-    body * { visibility: hidden; }
-    #invoiceTable, #invoiceTable *, .totals-section, .totals-section *, .customer-section, .customer-section * {
-        visibility: visible;
-    }
-    .container { box-shadow: none; border: none; }
-    .actions-section, .items-section, #install-container { display: none; }
-    .container { position: absolute; left: 0; top: 0; width: 100%; }
+    body { padding: 0; background: white; }
+    .bottom-nav, .app-header, .btn-print, .btn-backup, .form-grid, .btn-add, .btn-save, #install-bar { display: none !important; }
+    #tab-reports { display: block !important; }
+    .tab-content { display: none; }
 }
