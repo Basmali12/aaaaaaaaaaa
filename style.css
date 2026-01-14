@@ -1,0 +1,131 @@
+:root {
+    --bg-color: #f4f7f6;
+    --primary: #007bff;     /* أزرق */
+    --success: #28a745;     /* أخضر */
+    --danger: #dc3545;      /* أحمر */
+    --warning: #ffc107;     /* أصفر */
+    --info: #17a2b8;        /* سماوي */
+    --dark: #343a40;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: var(--bg-color);
+    margin: 0;
+    padding: 10px;
+    direction: rtl;
+}
+
+.container {
+    max-width: 900px;
+    margin: 0 auto;
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+}
+
+.section {
+    margin-bottom: 20px;
+    border-bottom: 1px solid #eee;
+    padding-bottom: 15px;
+}
+
+.row {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 10px;
+}
+
+input {
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    flex: 1;
+    text-align: center;
+    font-size: 16px;
+}
+
+.search-box {
+    display: flex;
+    flex: 2;
+    gap: 5px;
+}
+
+button {
+    padding: 10px 15px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: bold;
+    color: white;
+    transition: 0.3s;
+}
+
+button:hover { opacity: 0.9; }
+
+.btn-search { background-color: var(--primary); }
+.btn-add { background-color: var(--success); width: 100%; margin-top: 5px;}
+.btn-primary { background-color: var(--primary); }
+.btn-success { background-color: var(--success); }
+.btn-danger { background-color: var(--danger); }
+.btn-info { background-color: var(--info); }
+.btn-secondary { background-color: #6c757d; }
+.btn-warning { background-color: var(--warning); color: #000; }
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 10px;
+}
+
+table th, table td {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: center;
+}
+
+table th { background-color: #f8f9fa; }
+
+.totals-section {
+    display: flex;
+    justify-content: space-between;
+    background: #e9ecef;
+    padding: 15px;
+    border-radius: 5px;
+}
+
+.total-box {
+    text-align: center;
+}
+
+.total-box label { display: block; margin-bottom: 5px; font-weight: bold; }
+.total-box input { font-weight: bold; color: var(--dark); background: #fff; }
+.danger-text { color: red !important; }
+
+.action-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 10px;
+}
+
+/* Modal Styling */
+.modal { display: none; position: fixed; z-index: 1; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.4); }
+.modal-content { background-color: #fefefe; margin: 15% auto; padding: 20px; border: 1px solid #888; width: 300px; text-align: center; border-radius: 8px;}
+.close { color: #aaa; float: left; font-size: 28px; font-weight: bold; cursor: pointer; }
+
+/* للموبايل */
+@media (max-width: 600px) {
+    .row { flex-direction: column; }
+    .totals-section { flex-direction: column; gap: 10px; }
+}
+
+@media print {
+    body * { visibility: hidden; }
+    #invoiceTable, #invoiceTable *, .totals-section, .totals-section *, .customer-section, .customer-section * {
+        visibility: visible;
+    }
+    .container { box-shadow: none; border: none; }
+    .actions-section, .items-section, #install-container { display: none; }
+    .container { position: absolute; left: 0; top: 0; width: 100%; }
+}
