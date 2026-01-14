@@ -3,103 +3,130 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>نظام إدارة الديون والمبيعات</title>
+    <title>تطبيق نور الحسين</title>
     <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link rel="manifest" href="manifest.json">
 </head>
 <body>
 
-    <div id="install-container" style="display:none; background:#333; color:#fff; padding:10px; text-align:center;">
-        <p>هل تريد تحميل النسخة المكتبية/للهاتف؟</p>
-        <button id="installBtn">حمل التطبيق من هنا</button>
-        <button onclick="document.getElementById('install-container').style.display='none'">تخطى</button>
+    <div id="splash-screen">
+        <div class="splash-content">
+            <h1 class="glow-text">نور الحسين</h1>
+            <p>نظام إدارة الديون والمبيعات</p>
+            <div class="loader"></div>
+        </div>
     </div>
 
-    <div class="container">
+    <div id="install-bar">
+        <span>تطبيق متاح! هل تريد التثبيت؟</span>
+        <button id="installBtn">تثبيت الآن</button>
+        <button onclick="document.getElementById('install-bar').style.display='none'">X</button>
+    </div>
+
+    <header class="app-header">
+        <div id="current-customer-display">الزبون: <span id="headerCustomerName">لم يتم التحديد</span></div>
+        <button onclick="clearSelection()" class="btn-xs">تغيير</button>
+    </header>
+
+    <div class="app-container">
         
-        <div class="section customer-section">
-            <div class="row">
-                <input type="text" id="customerId" placeholder="رقم الزبون" readonly>
-                <div class="search-box">
-                    <input type="text" id="customerName" placeholder="اسم المشتري / بحث">
-                    <button onclick="searchCustomer()" class="btn-search">بحث</button>
+        <div id="tab-customers" class="tab-content active">
+            <div class="search-hero">
+                <h2>اختيار زبون</h2>
+                <div class="input-group">
+                    <input type="text" id="customerSearchInput" placeholder="اكتب اسم الزبون..." oninput="filterCustomers()">
+                    <button onclick="addNewCustomerPrompt()" class="btn-icon"><i class="fas fa-user-plus"></i></button>
                 </div>
             </div>
-            <div class="row">
-                <input type="text" id="customerPhone" placeholder="رقم الموبايل">
-                <input type="text" id="customerAlt" placeholder="اسم البديل">
+            <div class="customer-list" id="customerListContainer">
+                <p class="empty-state">ابحث عن زبون أو أضف جديد</p>
+            </div>
+            
+            <div class="dashboard-stats">
+                <div class="stat-card">
+                    <h3>إجمالي الديون بالسوق</h3>
+                    <p id="grandTotalDebt">0</p>
+                </div>
             </div>
         </div>
 
-        <div class="section items-section">
-            <div class="row">
+        <div id="tab-invoice" class="tab-content">
+            <div class="section-title">فاتورة بيع جديدة</div>
+            <div class="form-grid">
                 <input type="text" id="itemName" placeholder="اسم المادة">
-                <input type="number" id="itemPrice" placeholder="سعر البيع">
-                <input type="number" id="itemQty" placeholder="العدد" value="1">
+                <div class="row-inputs">
+                    <input type="number" id="itemPrice" placeholder="السعر">
+                    <input type="number" id="itemQty" placeholder="العدد" value="1">
+                </div>
+                <button onclick="addItemToCart()" class="btn-add">إضافة للقائمة <i class="fas fa-plus"></i></button>
             </div>
-            <button onclick="addItem()" class="btn-add">إضافة مادة للسلة</button>
-        </div>
 
-        <div class="section table-section">
-            <table id="invoiceTable">
-                <thead>
-                    <tr>
-                        <th>المادة</th>
-                        <th>السعر</th>
-                        <th>العدد</th>
-                        <th>الاجمالي</th>
-                        <th>حذف</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    </tbody>
-            </table>
-        </div>
+            <div class="cart-container">
+                <table id="cartTable">
+                    <thead>
+                        <tr><th>المادة</th><th>السعر</th><th>العدد</th><th>حذف</th></tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
 
-        <div class="section totals-section">
-            <div class="total-box">
-                <label>مجموع مبالغ البيع</label>
-                <input type="text" id="totalSales" value="0" readonly>
-            </div>
-            <div class="total-box">
-                <label>مجموع الواصل (المسدد)</label>
-                <input type="text" id="totalPaid" value="0" readonly>
-            </div>
-            <div class="total-box">
-                <label>مجموع الديون المتبقية</label>
-                <input type="text" id="totalDebt" value="0" readonly class="danger-text">
+            <div class="invoice-footer">
+                <div class="total-display">المجموع: <span id="cartTotal">0</span></div>
+                <button onclick="saveInvoice()" class="btn-save">حفظ الدين <i class="fas fa-save"></i></button>
             </div>
         </div>
 
-        <div class="section actions-section">
-            <div class="action-grid">
-                <button onclick="saveInvoice()" class="btn-primary">حفظ عملية بيع</button>
-                <button onclick="openPaymentModal()" class="btn-success">تسديد ديون</button>
-                <button onclick="deleteCurrentCustomer()" class="btn-danger">حذف زبون</button>
-                
-                <button onclick="printStatement()" class="btn-info">طباعة كشف حساب</button>
-                <button onclick="showInfo()" class="btn-secondary">معلومات المكتب</button>
-                <button onclick="clearForm()" class="btn-warning">فاتورة جديدة</button>
+        <div id="tab-payment" class="tab-content">
+            <div class="section-title">تسديد مبلغ (واصل)</div>
+            <div class="payment-card">
+                <p>الديون الحالية للزبون:</p>
+                <h2 id="currentDebtDisplay" class="debt-amount">0</h2>
+                <hr>
+                <label>المبلغ الواصل:</label>
+                <input type="number" id="paymentInput" class="big-input" placeholder="0">
+                <button onclick="processPayment()" class="btn-pay">تأكيد التسديد <i class="fas fa-check-circle"></i></button>
             </div>
+        </div>
+
+        <div id="tab-reports" class="tab-content">
+            <div class="section-title">كشف حساب الزبون</div>
+            <div class="report-summary">
+                <div class="box sale">مبيعات: <span id="repSales">0</span></div>
+                <div class="box paid">واصل: <span id="repPaid">0</span></div>
+                <div class="box debt">باقي: <span id="repDebt">0</span></div>
+            </div>
+            <div class="transactions-list" id="transList">
+                </div>
+            <button onclick="printReport()" class="btn-print">طباعة الكشف <i class="fas fa-print"></i></button>
+            <button onclick="exportData()" class="btn-backup">نسخ احتياطي للبيانات</button>
         </div>
 
     </div>
 
-    <div id="paymentModal" class="modal">
-        <div class="modal-content">
-            <span class="close" onclick="closePaymentModal()">&times;</span>
-            <h3>تسديد دفعة</h3>
-            <input type="number" id="paymentAmount" placeholder="المبلغ الواصل">
-            <button onclick="submitPayment()" class="btn-success">تسجيل التسديد</button>
-        </div>
-    </div>
+    <nav class="bottom-nav">
+        <a href="#" onclick="switchTab('tab-customers')" class="nav-item active">
+            <i class="fas fa-users"></i>
+            <span>الزبائن</span>
+        </a>
+        <a href="#" onclick="switchTab('tab-invoice')" class="nav-item">
+            <i class="fas fa-cart-plus"></i>
+            <span>بيع</span>
+        </a>
+        <a href="#" onclick="switchTab('tab-payment')" class="nav-item">
+            <i class="fas fa-hand-holding-usd"></i>
+            <span>تسديد</span>
+        </a>
+        <a href="#" onclick="switchTab('tab-reports')" class="nav-item">
+            <i class="fas fa-file-invoice"></i>
+            <span>السجل</span>
+        </a>
+    </nav>
 
     <script src="script.js"></script>
     <script>
-        // تسجيل Service Worker ليعمل اوفلاين
         if ('serviceWorker' in navigator) {
-            navigator.serviceWorker.register('sw.js')
-            .then(() => console.log('Service Worker Registered'));
+            navigator.serviceWorker.register('sw.js');
         }
     </script>
 </body>
