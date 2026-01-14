@@ -4,7 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>نور الحسين</title>
-    <link rel="stylesheet" href="style.css?v=3.0"> <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css"> 
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link rel="manifest" href="manifest.json">
 </head>
 <body>
@@ -107,6 +108,10 @@
             <div id="tab-reports" class="tab-content">
                 <div class="section-title">إعدادات الزبون</div>
                 
+                <button onclick="printCustomerReport()" class="btn-info" style="margin-bottom:15px; width:100%;">
+                    طباعة كشف حساب <i class="fas fa-print"></i>
+                </button>
+
                 <div class="link-share-box">
                     <p>رابط المعاينة للزبون:</p>
                     <div style="display:flex; gap:5px;">
@@ -120,6 +125,7 @@
                     <div class="box paid">واصل: <span id="repPaid">0</span></div>
                     <div class="box debt">باقي: <span id="repDebt">0</span></div>
                 </div>
+                
                 <div class="transactions-list" id="transList"></div>
                 
                 <div class="danger-zone">
@@ -150,5 +156,6 @@
         </div>
     </section>
 
-    <script src="script.js?v=3.0"></script> </body>
+    <script src="script.js"></script>
+</body>
 </html>
