@@ -1,63 +1,69 @@
 @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&display=swap');
 
 :root {
-    --primary: #2c3e50; /* كحلي غامق */
-    --accent: #d4af37;  /* ذهبي */
+    --primary: #2c3e50;
+    --accent: #d4af37;
     --bg: #f3f4f6;
     --white: #ffffff;
     --success: #27ae60;
     --danger: #c0392b;
-    --text: #333;
+    --info: #2980b9;
 }
 
-* { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+* { box-sizing: border-box; -webkit-tap-highlight-color: transparent; outline: none; }
 
 body {
     font-family: 'Cairo', sans-serif;
     background-color: var(--bg);
-    margin: 0;
-    padding: 0;
-    direction: rtl;
-    padding-bottom: 70px; /* مساحة للبار السفلي */
-    padding-top: 50px; /* مساحة للهيدر العلوي */
+    margin: 0; padding: 0; direction: rtl;
 }
+
+/* --- Login Overlay --- */
+.login-overlay {
+    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+    background: #1a1a2e;
+    z-index: 2000;
+    display: flex; justify-content: center; align-items: center;
+}
+
+.login-box {
+    background: white; padding: 30px; border-radius: 15px;
+    text-align: center; width: 90%; max-width: 350px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+}
+
+.login-box h2 { color: var(--primary); margin-top: 0; }
+.login-box button { margin-top: 10px; width: 100%; }
 
 /* --- Splash Screen --- */
 #splash-screen {
     position: fixed; top: 0; left: 0; width: 100%; height: 100%;
     background: linear-gradient(135deg, #1a1a2e, #16213e);
     z-index: 9999;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    color: var(--accent);
-    flex-direction: column;
-    transition: opacity 1s ease;
+    display: flex; justify-content: center; align-items: center;
+    flex-direction: column; color: var(--accent);
 }
 
 .glow-text {
-    font-size: 3rem;
-    text-shadow: 0 0 10px #d4af37, 0 0 20px #d4af37;
+    font-size: 3rem; text-shadow: 0 0 10px #d4af37;
     animation: pulse 2s infinite;
 }
 
 .loader {
-    width: 40px; height: 40px;
-    border: 4px solid #fff;
-    border-top: 4px solid var(--accent);
-    border-radius: 50%;
-    animation: spin 1s linear infinite;
-    margin-top: 20px;
+    width: 40px; height: 40px; border: 4px solid #fff;
+    border-top: 4px solid var(--accent); border-radius: 50%;
+    animation: spin 1s linear infinite; margin-top: 20px;
 }
 
-/* --- Layout --- */
+/* --- Layout Main --- */
+#admin-app-container { padding-bottom: 70px; padding-top: 50px; }
+
 .app-header {
     position: fixed; top: 0; left: 0; right: 0;
     background: var(--primary); color: white;
     padding: 10px 15px;
     display: flex; justify-content: space-between; align-items: center;
     z-index: 100;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
 }
 
 .tab-content { display: none; padding: 15px; animation: fadeIn 0.3s; }
@@ -66,76 +72,64 @@ body {
 /* --- Inputs & Buttons --- */
 input {
     width: 100%; padding: 12px; margin-bottom: 10px;
-    border: 1px solid #ddd; border-radius: 8px;
-    font-family: inherit; font-size: 16px;
+    border: 1px solid #ddd; border-radius: 8px; font-size: 16px;
+    text-align: center;
 }
 
 .row-inputs { display: flex; gap: 10px; }
-
 button {
     cursor: pointer; border: none; border-radius: 8px;
-    font-family: inherit; font-weight: bold; transition: 0.2s;
+    font-family: inherit; font-weight: bold; padding: 10px; color: white;
 }
+.btn-primary { background: var(--primary); }
+.btn-add { background: var(--primary); width: 100%; }
+.btn-save { background: var(--accent); color: black; width: 100%; }
+.btn-pay { background: var(--success); width: 100%; }
+.btn-danger { background: var(--danger); width: 100%; }
+.btn-info { background: var(--info); width: 100%; }
+.btn-secondary { background: #7f8c8d; width: 100%; }
+.btn-icon { width: 50px; background: var(--accent); font-size: 1.2rem; }
+.btn-xs { font-size: 12px; background: rgba(255,255,255,0.2); }
 
-.btn-add { width: 100%; background: var(--primary); color: white; padding: 12px; }
-.btn-save { width: 100%; background: var(--accent); color: #000; padding: 12px; }
-.btn-pay { width: 100%; background: var(--success); color: white; padding: 12px; }
-.btn-print { width: 48%; background: #34495e; color: white; padding: 10px; }
-.btn-backup { width: 48%; background: #7f8c8d; color: white; padding: 10px; }
-.btn-icon { padding: 0 15px; background: var(--accent); color: white; font-size: 1.2rem; }
-.btn-xs { padding: 5px 10px; font-size: 12px; background: rgba(255,255,255,0.2); color: white; }
-
-/* --- Bottom Nav --- */
-.bottom-nav {
-    position: fixed; bottom: 0; left: 0; right: 0;
-    background: white;
-    display: flex; justify-content: space-around;
-    padding: 10px 0;
-    box-shadow: 0 -2px 10px rgba(0,0,0,0.05);
-    border-top: 1px solid #eee;
-}
-
-.nav-item {
-    text-decoration: none; color: #999;
-    display: flex; flex-direction: column; align-items: center;
-    font-size: 12px; gap: 4px;
-}
-
-.nav-item i { font-size: 20px; }
-.nav-item.active { color: var(--primary); font-weight: bold; }
-
-/* --- Lists & Tables --- */
+/* --- Components --- */
 .customer-item {
-    background: white; padding: 15px; border-radius: 10px;
-    margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.03);
+    background: white; padding: 15px; border-radius: 10px; margin-bottom: 10px;
+    display: flex; justify-content: space-between; align-items: center;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.03); cursor: pointer;
 }
 
-.customer-item:active { background-color: #f0f0f0; }
-
-table { width: 100%; border-collapse: collapse; background: white; border-radius: 8px; overflow: hidden; }
-th { background: #eee; padding: 10px; font-size: 14px; }
-td { padding: 10px; border-bottom: 1px solid #eee; text-align: center; }
-
-/* --- Dashboard Stats --- */
 .report-summary { display: flex; gap: 5px; margin-bottom: 20px; }
 .report-summary .box { flex: 1; padding: 10px; border-radius: 5px; text-align: center; color: white; font-size: 14px;}
 .box.sale { background: var(--primary); }
 .box.paid { background: var(--success); }
 .box.debt { background: var(--danger); }
 
-/* --- Keyframes --- */
+.link-share-box {
+    background: white; padding: 15px; border-radius: 10px; margin-bottom: 20px;
+    border: 1px solid #ddd;
+}
+
+.danger-zone {
+    margin-top: 30px; padding-top: 20px; border-top: 2px dashed #ddd;
+}
+
+.bottom-nav {
+    position: fixed; bottom: 0; left: 0; right: 0;
+    background: white; display: flex; justify-content: space-around;
+    padding: 10px 0; border-top: 1px solid #eee; z-index: 100;
+}
+.nav-item { text-decoration: none; color: #999; display: flex; flex-direction: column; align-items: center; font-size: 12px; }
+.nav-item.active { color: var(--primary); font-weight: bold; }
+
+/* --- Modal --- */
+.modal { display: none; position: fixed; z-index: 3000; left: 0; top: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); }
+.modal-content { background: #fefefe; margin: 20% auto; padding: 20px; width: 85%; border-radius: 10px; text-align: center;}
+.close { float: right; font-size: 28px; font-weight: bold; cursor: pointer; }
+
+table { width: 100%; border-collapse: collapse; background: white; margin-bottom: 10px;}
+td, th { padding: 8px; border-bottom: 1px solid #eee; text-align: center; }
+th { background: #eee; }
+
 @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 @keyframes pulse { 0% { opacity: 0.8; transform: scale(1); } 50% { opacity: 1; transform: scale(1.05); } 100% { opacity: 0.8; transform: scale(1); } }
-@keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-
-/* --- Install Bar --- */
-#install-bar { display: none; background: #333; color: white; padding: 10px; position: fixed; top: 60px; left: 10px; right: 10px; border-radius: 5px; z-index: 999; text-align: center; }
-#install-bar button { margin: 0 5px; padding: 5px 10px; }
-
-@media print {
-    body { padding: 0; background: white; }
-    .bottom-nav, .app-header, .btn-print, .btn-backup, .form-grid, .btn-add, .btn-save, #install-bar { display: none !important; }
-    #tab-reports { display: block !important; }
-    .tab-content { display: none; }
-}
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
