@@ -1,135 +1,487 @@
-@import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&display=swap');
+/* استيراد خط عربي حديث (Cairo) */
+@import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap');
 
+/* تعريف المتغيرات والألوان الرئيسية */
 :root {
-    --primary: #2c3e50;
-    --accent: #d4af37;
-    --bg: #f3f4f6;
+    --primary: #2c3e50;  /* كحلي غامق - للعنوان والهيدر */
+    --accent: #d4af37;   /* ذهبي - للعناوين المميزة والأزرار الرئيسية */
+    --bg: #f4f7f6;       /* خلفية رمادية فاتحة جداً */
     --white: #ffffff;
-    --success: #27ae60;
-    --danger: #c0392b;
-    --info: #2980b9;
+    --success: #27ae60;  /* أخضر - للتسديد */
+    --danger: #c0392b;   /* أحمر - للديون والحذف */
+    --info: #2980b9;     /* أزرق - للمعلومات والنسخ */
+    --text: #333333;
 }
 
-* { box-sizing: border-box; -webkit-tap-highlight-color: transparent; outline: none; }
+/* إعدادات عامة */
+* {
+    box-sizing: border-box;
+    -webkit-tap-highlight-color: transparent; /* إزالة تظليل النقر في الموبايل */
+    outline: none;
+}
 
 body {
     font-family: 'Cairo', sans-serif;
     background-color: var(--bg);
-    margin: 0; padding: 0; direction: rtl;
+    color: var(--text);
+    margin: 0;
+    padding: 0;
+    direction: rtl;
 }
 
-/* --- Login Overlay --- */
+/* -----------------------------------------------------------
+   شاشات تسجيل الدخول (Overlay) - للأدمن والزبون
+----------------------------------------------------------- */
 .login-overlay {
-    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-    background: #1a1a2e;
-    z-index: 2000;
-    display: flex; justify-content: center; align-items: center;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: #1a1a2e; /* خلفية داكنة */
+    z-index: 2000;       /* فوق كل شيء */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
 }
 
 .login-box {
-    background: white; padding: 30px; border-radius: 15px;
-    text-align: center; width: 90%; max-width: 350px;
-    box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+    background: white;
+    padding: 40px 30px;
+    border-radius: 20px;
+    text-align: center;
+    width: 100%;
+    max-width: 380px;
+    box-shadow: 0 15px 35px rgba(0,0,0,0.4);
+    animation: fadeIn 0.5s ease-out;
 }
 
-.login-box h2 { color: var(--primary); margin-top: 0; }
-.login-box button { margin-top: 10px; width: 100%; }
+.login-box h2 {
+    color: var(--primary);
+    margin-top: 0;
+    font-size: 1.5rem;
+}
 
-/* --- Splash Screen --- */
+.login-box p {
+    color: #666;
+    margin-bottom: 20px;
+}
+
+.login-box input {
+    background: #f9f9f9;
+    border: 2px solid #eee;
+}
+
+.login-box input:focus {
+    border-color: var(--accent);
+}
+
+.login-box button {
+    margin-top: 15px;
+    width: 100%;
+    padding: 12px;
+    font-size: 16px;
+}
+
+/* -----------------------------------------------------------
+   شاشة البداية المتحركة (Splash Screen)
+----------------------------------------------------------- */
 #splash-screen {
-    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
     background: linear-gradient(135deg, #1a1a2e, #16213e);
     z-index: 9999;
-    display: flex; justify-content: center; align-items: center;
-    flex-direction: column; color: var(--accent);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    color: var(--accent);
+}
+
+.splash-content {
+    text-align: center;
 }
 
 .glow-text {
-    font-size: 3rem; text-shadow: 0 0 10px #d4af37;
+    font-size: 3.5rem;
+    font-weight: bold;
+    color: var(--accent);
+    text-shadow: 0 0 15px rgba(212, 175, 55, 0.5);
+    margin: 0;
     animation: pulse 2s infinite;
 }
 
 .loader {
-    width: 40px; height: 40px; border: 4px solid #fff;
-    border-top: 4px solid var(--accent); border-radius: 50%;
-    animation: spin 1s linear infinite; margin-top: 20px;
+    width: 50px;
+    height: 50px;
+    border: 5px solid rgba(255, 255, 255, 0.1);
+    border-top: 5px solid var(--accent);
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin: 30px auto 0;
 }
 
-/* --- Layout Main --- */
-#admin-app-container { padding-bottom: 70px; padding-top: 50px; }
+/* -----------------------------------------------------------
+   الهيكل العام للتطبيق (Layout)
+----------------------------------------------------------- */
+#admin-app-container, #client-view-container {
+    /* مسافات عشان الهيدر والفوتر الثابتين */
+    padding-top: 60px; 
+    padding-bottom: 80px; 
+}
 
+/* الهيدر العلوي */
 .app-header {
-    position: fixed; top: 0; left: 0; right: 0;
-    background: var(--primary); color: white;
-    padding: 10px 15px;
-    display: flex; justify-content: space-between; align-items: center;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    background: var(--primary);
+    color: white;
+    padding: 10px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
     z-index: 100;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    height: 60px;
 }
 
-.tab-content { display: none; padding: 15px; animation: fadeIn 0.3s; }
-.tab-content.active { display: block; }
+.app-header div {
+    font-weight: bold;
+    font-size: 1.1rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
 
-/* --- Inputs & Buttons --- */
+/* الحاوية الرئيسية */
+.app-container, .container {
+    padding: 15px;
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+/* -----------------------------------------------------------
+   نظام التبويبات (Tabs)
+----------------------------------------------------------- */
+.tab-content {
+    display: none;
+    animation: fadeIn 0.3s ease-in-out;
+}
+
+.tab-content.active {
+    display: block;
+}
+
+/* عناوين الأقسام */
+.section-title {
+    font-size: 1.2rem;
+    color: var(--primary);
+    margin-bottom: 15px;
+    border-bottom: 2px solid var(--accent);
+    padding-bottom: 5px;
+    display: inline-block;
+}
+
+.search-hero {
+    background: white;
+    padding: 15px;
+    border-radius: 12px;
+    margin-bottom: 15px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+}
+
+.search-hero h2 { margin-top: 0; font-size: 1.2rem; color: var(--primary); }
+
+/* -----------------------------------------------------------
+   عناصر الإدخال والأزرار (Inputs & Buttons)
+----------------------------------------------------------- */
+.input-group {
+    display: flex;
+    gap: 10px;
+}
+
 input {
-    width: 100%; padding: 12px; margin-bottom: 10px;
-    border: 1px solid #ddd; border-radius: 8px; font-size: 16px;
-    text-align: center;
-}
-
-.row-inputs { display: flex; gap: 10px; }
-button {
-    cursor: pointer; border: none; border-radius: 8px;
-    font-family: inherit; font-weight: bold; padding: 10px; color: white;
-}
-.btn-primary { background: var(--primary); }
-.btn-add { background: var(--primary); width: 100%; }
-.btn-save { background: var(--accent); color: black; width: 100%; }
-.btn-pay { background: var(--success); width: 100%; }
-.btn-danger { background: var(--danger); width: 100%; }
-.btn-info { background: var(--info); width: 100%; }
-.btn-secondary { background: #7f8c8d; width: 100%; }
-.btn-icon { width: 50px; background: var(--accent); font-size: 1.2rem; }
-.btn-xs { font-size: 12px; background: rgba(255,255,255,0.2); }
-
-/* --- Components --- */
-.customer-item {
-    background: white; padding: 15px; border-radius: 10px; margin-bottom: 10px;
-    display: flex; justify-content: space-between; align-items: center;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.03); cursor: pointer;
-}
-
-.report-summary { display: flex; gap: 5px; margin-bottom: 20px; }
-.report-summary .box { flex: 1; padding: 10px; border-radius: 5px; text-align: center; color: white; font-size: 14px;}
-.box.sale { background: var(--primary); }
-.box.paid { background: var(--success); }
-.box.debt { background: var(--danger); }
-
-.link-share-box {
-    background: white; padding: 15px; border-radius: 10px; margin-bottom: 20px;
+    width: 100%;
+    padding: 12px 15px;
+    margin-bottom: 12px;
     border: 1px solid #ddd;
+    border-radius: 10px;
+    font-size: 16px;
+    font-family: inherit;
+    text-align: center;
+    transition: 0.3s;
 }
 
+input:focus {
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px rgba(44, 62, 80, 0.1);
+}
+
+.row-inputs {
+    display: flex;
+    gap: 10px;
+}
+
+/* الأزرار */
+button {
+    cursor: pointer;
+    border: none;
+    border-radius: 10px;
+    font-family: inherit;
+    font-weight: bold;
+    padding: 12px;
+    color: white;
+    transition: transform 0.1s, opacity 0.2s;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+}
+
+button:active { transform: scale(0.98); }
+button:hover { opacity: 0.9; }
+
+/* ألوان الأزرار */
+.btn-primary { background: var(--primary); }
+.btn-add     { background: var(--primary); width: 100%; }
+.btn-save    { background: var(--accent); color: #000; width: 100%; }
+.btn-pay     { background: var(--success); width: 100%; font-size: 1.1rem; }
+.btn-danger  { background: var(--danger); width: 100%; color: white;}
+.btn-info    { background: var(--info); }
+.btn-icon    { width: 50px; background: var(--accent); font-size: 1.2rem; padding: 0; }
+.btn-xs      { font-size: 12px; padding: 5px 12px; background: rgba(255,255,255,0.2); border-radius: 20px; }
+.btn-secondary { background: #95a5a6; color: white; width: 100%; }
+
+/* -----------------------------------------------------------
+   القوائم والجداول والبطاقات
+----------------------------------------------------------- */
+/* بطاقة الزبون في القائمة */
+.customer-item {
+    background: white;
+    padding: 15px;
+    border-radius: 12px;
+    margin-bottom: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.03);
+    cursor: pointer;
+    border: 1px solid transparent;
+}
+
+.customer-item:hover { border-color: var(--accent); }
+
+/* ملخص الحساب (3 مربعات) */
+.report-summary {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 20px;
+}
+
+.report-summary .box {
+    flex: 1;
+    padding: 15px 5px;
+    border-radius: 10px;
+    text-align: center;
+    color: white;
+    font-size: 14px;
+    box-shadow: 0 3px 6px rgba(0,0,0,0.1);
+}
+
+.report-summary .box span {
+    display: block;
+    font-weight: bold;
+    font-size: 1.2rem;
+    margin-top: 5px;
+}
+
+.box.sale { background: linear-gradient(to bottom right, #34495e, #2c3e50); }
+.box.paid { background: linear-gradient(to bottom right, #2ecc71, #27ae60); }
+.box.debt { background: linear-gradient(to bottom right, #e74c3c, #c0392b); }
+
+/* صندوق رابط المشاركة */
+.link-share-box {
+    background: #fff;
+    padding: 15px;
+    border: 1px solid #e0e0e0;
+    border-radius: 10px;
+    margin-bottom: 20px;
+}
+
+/* منطقة الخطر */
 .danger-zone {
-    margin-top: 30px; padding-top: 20px; border-top: 2px dashed #ddd;
+    margin-top: 40px;
+    padding-top: 20px;
+    border-top: 2px dashed #ddd;
 }
 
+/* الجداول */
+.cart-container {
+    background: white;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+    margin-bottom: 15px;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+th {
+    background: #f8f9fa;
+    color: #666;
+    padding: 12px;
+    font-size: 0.9rem;
+}
+
+td {
+    padding: 12px;
+    border-bottom: 1px solid #eee;
+    text-align: center;
+    font-weight: 600;
+}
+
+/* بطاقة التسديد الكبيرة */
+.payment-card {
+    background: white;
+    padding: 30px;
+    border-radius: 15px;
+    text-align: center;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+}
+
+.debt-amount {
+    font-size: 2.5rem;
+    color: var(--danger);
+    margin: 10px 0 20px 0;
+}
+
+.big-input {
+    font-size: 1.5rem;
+    padding: 15px;
+    border: 2px solid var(--success);
+}
+
+/* -----------------------------------------------------------
+   شريط التنقل السفلي (Bottom Nav)
+----------------------------------------------------------- */
 .bottom-nav {
-    position: fixed; bottom: 0; left: 0; right: 0;
-    background: white; display: flex; justify-content: space-around;
-    padding: 10px 0; border-top: 1px solid #eee; z-index: 100;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: white;
+    display: flex;
+    justify-content: space-around;
+    padding: 12px 0;
+    border-top: 1px solid #eee;
+    z-index: 100;
+    box-shadow: 0 -2px 10px rgba(0,0,0,0.05);
 }
-.nav-item { text-decoration: none; color: #999; display: flex; flex-direction: column; align-items: center; font-size: 12px; }
-.nav-item.active { color: var(--primary); font-weight: bold; }
 
-/* --- Modal --- */
-.modal { display: none; position: fixed; z-index: 3000; left: 0; top: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); }
-.modal-content { background: #fefefe; margin: 20% auto; padding: 20px; width: 85%; border-radius: 10px; text-align: center;}
-.close { float: right; font-size: 28px; font-weight: bold; cursor: pointer; }
+.nav-item {
+    text-decoration: none;
+    color: #95a5a6;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    font-size: 11px;
+    gap: 5px;
+    transition: 0.3s;
+}
 
-table { width: 100%; border-collapse: collapse; background: white; margin-bottom: 10px;}
-td, th { padding: 8px; border-bottom: 1px solid #eee; text-align: center; }
-th { background: #eee; }
+.nav-item i {
+    font-size: 22px;
+}
 
-@keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-@keyframes pulse { 0% { opacity: 0.8; transform: scale(1); } 50% { opacity: 1; transform: scale(1.05); } 100% { opacity: 0.8; transform: scale(1); } }
-@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+.nav-item.active {
+    color: var(--primary);
+    transform: translateY(-2px);
+}
+.nav-item.active i {
+    color: var(--accent);
+}
+
+/* -----------------------------------------------------------
+   النافذة المنبثقة (Modal)
+----------------------------------------------------------- */
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 3000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.6);
+    backdrop-filter: blur(2px);
+}
+
+.modal-content {
+    background: #fefefe;
+    margin: 15% auto;
+    padding: 25px;
+    width: 90%;
+    max-width: 400px;
+    border-radius: 15px;
+    text-align: center;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+    animation: fadeIn 0.3s;
+}
+
+.modal-content h3 {
+    margin-top: 0;
+    color: var(--primary);
+}
+
+.close {
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+    color: #aaa;
+    cursor: pointer;
+}
+
+.close:hover { color: #000; }
+
+/* -----------------------------------------------------------
+   الأنميشن (Keyframes)
+----------------------------------------------------------- */
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+@keyframes pulse {
+    0% { opacity: 0.8; transform: scale(1); }
+    50% { opacity: 1; transform: scale(1.05); }
+    100% { opacity: 0.8; transform: scale(1); }
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* -----------------------------------------------------------
+   تعديلات الطباعة (Print)
+----------------------------------------------------------- */
+@media print {
+    body { background: white; padding: 0; }
+    #admin-app-container, #client-view-container { padding: 0; }
+    .app-header, .bottom-nav, .btn-print, .btn-backup, .btn-add, .btn-save, .btn-pay, .input-group, .form-grid, .danger-zone, .link-share-box, .btn-icon, .btn-xs, .btn-secondary {
+        display: none !important;
+    }
+    .transactions-list, .cart-container {
+        border: 1px solid #000;
+    }
+    .customer-item { border: 1px solid #000; box-shadow: none; }
+}
