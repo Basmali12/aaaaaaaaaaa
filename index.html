@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>نظام إدارة الديون والمبيعات</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="manifest" href="manifest.json">
+</head>
+<body>
+
+    <div id="install-container" style="display:none; background:#333; color:#fff; padding:10px; text-align:center;">
+        <p>هل تريد تحميل النسخة المكتبية/للهاتف؟</p>
+        <button id="installBtn">حمل التطبيق من هنا</button>
+        <button onclick="document.getElementById('install-container').style.display='none'">تخطى</button>
+    </div>
+
+    <div class="container">
+        
+        <div class="section customer-section">
+            <div class="row">
+                <input type="text" id="customerId" placeholder="رقم الزبون" readonly>
+                <div class="search-box">
+                    <input type="text" id="customerName" placeholder="اسم المشتري / بحث">
+                    <button onclick="searchCustomer()" class="btn-search">بحث</button>
+                </div>
+            </div>
+            <div class="row">
+                <input type="text" id="customerPhone" placeholder="رقم الموبايل">
+                <input type="text" id="customerAlt" placeholder="اسم البديل">
+            </div>
+        </div>
+
+        <div class="section items-section">
+            <div class="row">
+                <input type="text" id="itemName" placeholder="اسم المادة">
+                <input type="number" id="itemPrice" placeholder="سعر البيع">
+                <input type="number" id="itemQty" placeholder="العدد" value="1">
+            </div>
+            <button onclick="addItem()" class="btn-add">إضافة مادة للسلة</button>
+        </div>
+
+        <div class="section table-section">
+            <table id="invoiceTable">
+                <thead>
+                    <tr>
+                        <th>المادة</th>
+                        <th>السعر</th>
+                        <th>العدد</th>
+                        <th>الاجمالي</th>
+                        <th>حذف</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    </tbody>
+            </table>
+        </div>
+
+        <div class="section totals-section">
+            <div class="total-box">
+                <label>مجموع مبالغ البيع</label>
+                <input type="text" id="totalSales" value="0" readonly>
+            </div>
+            <div class="total-box">
+                <label>مجموع الواصل (المسدد)</label>
+                <input type="text" id="totalPaid" value="0" readonly>
+            </div>
+            <div class="total-box">
+                <label>مجموع الديون المتبقية</label>
+                <input type="text" id="totalDebt" value="0" readonly class="danger-text">
+            </div>
+        </div>
+
+        <div class="section actions-section">
+            <div class="action-grid">
+                <button onclick="saveInvoice()" class="btn-primary">حفظ عملية بيع</button>
+                <button onclick="openPaymentModal()" class="btn-success">تسديد ديون</button>
+                <button onclick="deleteCurrentCustomer()" class="btn-danger">حذف زبون</button>
+                
+                <button onclick="printStatement()" class="btn-info">طباعة كشف حساب</button>
+                <button onclick="showInfo()" class="btn-secondary">معلومات المكتب</button>
+                <button onclick="clearForm()" class="btn-warning">فاتورة جديدة</button>
+            </div>
+        </div>
+
+    </div>
+
+    <div id="paymentModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closePaymentModal()">&times;</span>
+            <h3>تسديد دفعة</h3>
+            <input type="number" id="paymentAmount" placeholder="المبلغ الواصل">
+            <button onclick="submitPayment()" class="btn-success">تسجيل التسديد</button>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+    <script>
+        // تسجيل Service Worker ليعمل اوفلاين
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('sw.js')
+            .then(() => console.log('Service Worker Registered'));
+        }
+    </script>
+</body>
+</html>
