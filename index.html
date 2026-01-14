@@ -3,46 +3,56 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>تطبيق نور الحسين</title>
+    <title>نور الحسين</title>
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link rel="manifest" href="manifest.json">
 </head>
 <body>
 
-    <div id="admin-login-screen" class="login-overlay">
+    <div id="admin-login-screen" class="login-overlay" style="display: none;">
         <div class="login-box">
-            <h2>نور الحسين</h2>
-            <p>أدخل رمز الدخول للمدير</p>
-            <input type="password" id="adminPinInput" placeholder="الرمز السري">
-            <button onclick="checkAdminLogin()" class="btn-primary">دخول</button>
+            <h2>نور الحسين (الإدارة)</h2>
+            <p>أدخل الرمز السري للمدير</p>
+            <input type="password" id="adminPinInput" placeholder="الرمز (1972)">
+            <button onclick="checkAdminLogin()" class="btn-primary">دخول المدير</button>
         </div>
     </div>
 
-    <div id="client-login-screen" class="login-overlay" style="display:none;">
+    <div id="client-login-screen" class="login-overlay" style="display: none;">
         <div class="login-box">
-            <h2>مرحباً بك</h2>
-            <p>أدخل كلمة المرور الخاصة بك لعرض كشف الحساب</p>
-            <input type="password" id="clientPassInput" placeholder="كلمة المرور">
-            <button onclick="checkClientLogin()" class="btn-primary">عرض كشفي</button>
+            <h2>معاينة ديونك</h2>
+            <p>مرحباً بك عزيزي الزبون</p>
+            <p id="client-welcome-name" style="font-weight:bold; color:#d4af37;"></p>
+            <input type="password" id="clientPassInput" placeholder="أدخل كلمة المرور الخاصة بك">
+            <button onclick="checkClientLogin()" class="btn-primary">عرض كشف الحساب</button>
         </div>
     </div>
+
 
     <div id="client-view-container" style="display:none;">
         <header class="app-header">
-            <div>كشف حساب: <span id="clientViewName"></span></div>
+            <div><i class="fas fa-user-circle"></i> حساب: <span id="cvName"></span></div>
         </header>
-        <div class="container" style="margin-top: 60px;">
+
+        <div class="container" style="margin-top: 70px; padding: 15px;">
             <div class="report-summary">
                 <div class="box sale">مبيعات: <span id="cvSales">0</span></div>
                 <div class="box paid">واصل: <span id="cvPaid">0</span></div>
                 <div class="box debt">باقي: <span id="cvDebt">0</span></div>
             </div>
-            <h3>سجل العمليات</h3>
-            <div class="transactions-list" id="cvTransList"></div>
-            <button onclick="window.location.href = window.location.pathname" class="btn-secondary" style="margin-top:20px;">العودة للرئيسية</button>
+
+            <h3 style="margin-bottom: 10px; color: #555;">سجل الحركات التفصيلي</h3>
+            
+            <div class="transactions-list" id="cvTransList">
+                </div>
+
+            <div style="margin-top: 30px; text-align: center; color: #999; font-size: 12px;">
+                <p>نظام نور الحسين لإدارة الديون</p>
+            </div>
         </div>
     </div>
+
 
     <div id="admin-app-container" style="display:none;">
         
@@ -106,9 +116,11 @@
                 <div class="section-title">لوحة تحكم الزبون</div>
                 
                 <div class="link-share-box">
-                    <p>رابط ملف الزبون (للمشاهدة)</p>
-                    <input type="text" id="customerShareLink" readonly>
-                    <button onclick="copyLink()" class="btn-info">نسخ الرابط <i class="fas fa-copy"></i></button>
+                    <p style="font-size:12px; margin-bottom:5px;">رابط معاينة الزبون (أرسله له):</p>
+                    <div style="display:flex; gap:5px;">
+                        <input type="text" id="customerShareLink" readonly style="font-size:12px;">
+                        <button onclick="copyLink()" class="btn-info" style="width:auto; white-space:nowrap;">نسخ</button>
+                    </div>
                 </div>
 
                 <div class="report-summary">
@@ -120,7 +132,7 @@
                 <div class="transactions-list" id="transList"></div>
                 
                 <div class="danger-zone">
-                    <button onclick="deleteCustomer()" class="btn-danger">حذف الزبون نهائياً <i class="fas fa-trash"></i></button>
+                    <button onclick="deleteCustomer()" class="btn-danger">حذف الزبون نهائياً (121) <i class="fas fa-trash"></i></button>
                 </div>
             </div>
 
@@ -139,8 +151,8 @@
                 <h3>زبون جديد</h3>
                 <input type="text" id="newCName" placeholder="اسم الزبون">
                 <input type="text" id="newCPhone" placeholder="رقم الهاتف">
-                <input type="password" id="newCPass" placeholder="كلمة مرور الزبون (للرابط)">
-                <button onclick="confirmAddCustomer()" class="btn-primary">حفظ الزبون</button>
+                <input type="password" id="newCPass" placeholder="أنشئ كلمة مرور له">
+                <button onclick="confirmAddCustomer()" class="btn-primary">حفظ</button>
             </div>
         </div>
     </div>
