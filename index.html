@@ -69,6 +69,12 @@
             <div id="tab-customers" class="tab-content active">
                 <div class="search-hero">
                     <h2>الزبائن</h2>
+                    
+                    <div style="background:var(--danger); color:white; padding:15px; border-radius:12px; text-align:center; margin-bottom:15px; box-shadow: 0 4px 10px rgba(0,0,0,0.1);">
+                        <span style="display:block; font-size:14px; opacity:0.9;">مجموع ديون النظام الكلي</span>
+                        <span id="sysTotalDebt" style="display:block; font-size:2rem; font-weight:bold; margin-top:5px;">0</span>
+                    </div>
+
                     <div class="input-group">
                         <input type="text" id="customerSearchInput" placeholder="بحث..." oninput="filterCustomers()" autocomplete="off">
                         <button onclick="openAddCustomerModal()" class="btn-icon"><i class="fas fa-user-plus"></i></button>
