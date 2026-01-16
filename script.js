@@ -172,6 +172,9 @@ function confirmAddCustomer() {
 }
 
 function renderCustomerList(filterText = '') {
+    // تحديث الدين الكلي عند عرض القائمة
+    calculateGlobalDebt();
+
     const list = document.getElementById('customerListContainer');
     list.innerHTML = '';
     const filtered = db.customers.filter(c => c.name.includes(filterText));
@@ -216,6 +219,7 @@ function deleteCustomer() {
         db.customers = db.customers.filter(c => c.id !== activeCustomer.id);
         saveData();
         clearSelection();
+        calculateGlobalDebt(); // تحديث بعد الحذف
         alert("تم حذف الزبون.");
     } else {
         alert("رمز الحذف خاطئ!");
@@ -262,6 +266,7 @@ function saveInvoice() {
     alert('تم الحفظ');
     switchTab('tab-reports');
     refreshAdminViews();
+    calculateGlobalDebt(); // تحديث بعد زيادة الدين
 }
 
 // --- عمليات التسديد ---
@@ -278,6 +283,7 @@ function processPayment() {
     document.getElementById('paymentInput').value = '';
     alert('تم التسديد');
     refreshAdminViews();
+    calculateGlobalDebt(); // تحديث بعد نقصان الدين
 }
 
 function refreshAdminViews() {
@@ -309,3 +315,10 @@ function refreshAdminViews() {
 }
 
 function saveData() { localStorage.setItem('noorHusseinDB', JSON.stringify(db)); }
+
+// --- دالة حساب الدين الكلي للنظام (جديد) ---
+function calculateGlobalDebt() {
+    const total = db.customers.reduce((acc, c) => acc + (c.totalSales - c.totalPaid), 0);
+    const el = document.getElementById('sysTotalDebt');
+    if (el) el.innerText = total.toLocaleString();
+}
