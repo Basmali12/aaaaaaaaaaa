@@ -72,10 +72,11 @@ function checkClientLogin() {
 function fillClientViewData(c) {
     document.getElementById('cvName').innerText = c.name;
     const debt = c.totalSales - c.totalPaid;
+    const sym = c.currency === 'USD' ? '$' : 'د.ع'; // تحديد الرمز
     
-    document.getElementById('cvSales').innerText = c.totalSales.toLocaleString();
-    document.getElementById('cvPaid').innerText = c.totalPaid.toLocaleString();
-    document.getElementById('cvDebt').innerText = debt.toLocaleString();
+    document.getElementById('cvSales').innerText = c.totalSales.toLocaleString() + ' ' + sym;
+    document.getElementById('cvPaid').innerText = c.totalPaid.toLocaleString() + ' ' + sym;
+    document.getElementById('cvDebt').innerText = debt.toLocaleString() + ' ' + sym;
 
     const list = document.getElementById('cvTransList');
     list.innerHTML = '';
@@ -92,7 +93,7 @@ function fillClientViewData(c) {
                     <div style="font-weight:bold; color:${t.type === 'sale' ? '#c0392b' : '#27ae60'}">
                         ${t.type === 'sale' ? '<i class="fas fa-file-invoice"></i> فاتورة' : '<i class="fas fa-money-bill-wave"></i> تسديد'}
                     </div>
-                    <div style="font-weight:bold; font-size:1.1rem;">${t.amount.toLocaleString()}</div>
+                    <div style="font-weight:bold; font-size:1.1rem;">${t.amount.toLocaleString()} ${sym}</div>
                 </div>
                 <div style="display:flex; justify-content:space-between; margin-top:5px;">
                      <div style="font-size:11px; color:#999;">${t.date}</div>
@@ -150,12 +151,15 @@ function confirmAddCustomer() {
     const name = document.getElementById('newCName').value;
     const phone = document.getElementById('newCPhone').value;
     const pass = document.getElementById('newCPass').value;
+    const currency = document.getElementById('newCCurrency').value; // استلام العملة
+
     if (!name || !pass) return alert("الاسم وكلمة المرور مطلوبان");
 
     const newC = {
         id: Date.now(),
         name: name,
         phone: phone,
+        currency: currency, // حفظ العملة
         password: pass,
         totalSales: 0,
         totalPaid: 0,
@@ -172,7 +176,6 @@ function confirmAddCustomer() {
 }
 
 function renderCustomerList(filterText = '') {
-    // تحديث الدين الكلي عند عرض القائمة
     calculateGlobalDebt();
 
     const list = document.getElementById('customerListContainer');
@@ -180,10 +183,11 @@ function renderCustomerList(filterText = '') {
     const filtered = db.customers.filter(c => c.name.includes(filterText));
     filtered.forEach(c => {
         const debt = c.totalSales - c.totalPaid;
+        const sym = c.currency === 'USD' ? '$' : 'د.ع'; // عرض العملة في القائمة
         const div = document.createElement('div');
         div.className = 'customer-item';
         div.onclick = () => selectCustomer(c.id);
-        div.innerHTML = `<div><strong>${c.name}</strong><br><small style="color:${debt > 0 ? 'red' : 'green'}">الدين: ${debt.toLocaleString()}</small></div><i class="fas fa-chevron-left" style="color:#ccc"></i>`;
+        div.innerHTML = `<div><strong>${c.name}</strong><br><small style="color:${debt > 0 ? 'red' : 'green'}">الدين: ${debt.toLocaleString()} ${sym}</small></div><i class="fas fa-chevron-left" style="color:#ccc"></i>`;
         list.appendChild(div);
     });
 }
@@ -289,10 +293,12 @@ function processPayment() {
 function refreshAdminViews() {
     if (!activeCustomer) return;
     const currentDebt = activeCustomer.totalSales - activeCustomer.totalPaid;
-    document.getElementById('currentDebtDisplay').innerText = currentDebt.toLocaleString();
-    document.getElementById('repSales').innerText = activeCustomer.totalSales.toLocaleString();
-    document.getElementById('repPaid').innerText = activeCustomer.totalPaid.toLocaleString();
-    document.getElementById('repDebt').innerText = currentDebt.toLocaleString();
+    const sym = activeCustomer.currency === 'USD' ? '$' : 'د.ع'; // عرض العملة في لوحة الأدمن
+
+    document.getElementById('currentDebtDisplay').innerText = currentDebt.toLocaleString() + ' ' + sym;
+    document.getElementById('repSales').innerText = activeCustomer.totalSales.toLocaleString() + ' ' + sym;
+    document.getElementById('repPaid').innerText = activeCustomer.totalPaid.toLocaleString() + ' ' + sym;
+    document.getElementById('repDebt').innerText = currentDebt.toLocaleString() + ' ' + sym;
     
     const list = document.getElementById('transList');
     list.innerHTML = '';
@@ -305,7 +311,7 @@ function refreshAdminViews() {
             <div style="background:white; padding:10px; border-bottom:1px solid #eee; margin-bottom:5px;">
                 <div style="display:flex; justify-content:space-between; color:${t.type === 'sale' ? 'red' : 'green'}">
                     <strong>${t.type === 'sale' ? 'فاتورة' : 'تسديد'}</strong>
-                    <span>${t.amount.toLocaleString()}</span>
+                    <span>${t.amount.toLocaleString()} ${sym}</span>
                 </div>
                 <small style="color:#aaa;">${t.date}</small>
                 ${details}
@@ -316,9 +322,11 @@ function refreshAdminViews() {
 
 function saveData() { localStorage.setItem('noorHusseinDB', JSON.stringify(db)); }
 
-// --- دالة حساب الدين الكلي للنظام (جديد) ---
+// --- دالة حساب الدين الكلي للنظام ---
 function calculateGlobalDebt() {
+    // هذه الدالة تعرض رقمًا مجردًا، لأنه قد يكون خليطًا من العملات
+    // لتبسيط العرض، سيتم عرض الرقم فقط أو يمكن تفصيله لاحقاً، حالياً سنتركه رقمًا كما هو
     const total = db.customers.reduce((acc, c) => acc + (c.totalSales - c.totalPaid), 0);
     const el = document.getElementById('sysTotalDebt');
-    if (el) el.innerText = total.toLocaleString();
+    if (el) el.innerText = total.toLocaleString(); 
 }
