@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>نور الحسين</title>
+    <title>مجمع أضواء كربلاء</title>
     <link rel="stylesheet" href="style.css"> 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link rel="manifest" href="manifest.json">
@@ -12,7 +12,7 @@
 
     <section id="screen-admin-login" class="app-section">
         <div class="login-box">
-            <h2>نور الحسين (الإدارة)</h2>
+            <h2>مجمع أضواء كربلاء (الإدارة)</h2>
             <p>أدخل الرمز السري للمدير</p>
             <input type="text" style="display:none" autocomplete="off">
             <input type="password" style="display:none" autocomplete="off">
@@ -47,7 +47,7 @@
             </div>
             <h3>سجل الحركات</h3>
             <div class="transactions-list" id="cvTransList"></div>
-            <div style="text-align:center; margin-top:20px; color:#999; font-size:12px;">نظام نور الحسين</div>
+            <div style="text-align:center; margin-top:20px; color:#999; font-size:12px;">نظام مجمع أضواء كربلاء</div>
         </div>
     </section>
 
@@ -55,7 +55,7 @@
         
         <div id="splash-screen">
             <div class="splash-content">
-                <h1 class="glow-text">نور الحسين</h1>
+                <h1 class="glow-text">مجمع أضواء كربلاء</h1>
                 <div class="loader"></div>
             </div>
         </div>
@@ -156,6 +156,12 @@
                 
                 <input type="text" id="newCName" placeholder="الاسم" autocomplete="off">
                 <input type="text" id="newCPhone" placeholder="الهاتف" autocomplete="off">
+                
+                <select id="newCCurrency" style="width:100%; padding:12px; margin-bottom:10px; border:1px solid #ddd; border-radius:8px; background:white; font-family:inherit;">
+                    <option value="IQD">دينار عراقي (د.ع)</option>
+                    <option value="USD">دولار أمريكي ($)</option>
+                </select>
+
                 <input type="password" id="newCPass" placeholder="كلمة مرور الزبون" autocomplete="new-password" readonly onfocus="this.removeAttribute('readonly');">
                 <button onclick="confirmAddCustomer()" class="btn-primary">حفظ</button>
             </div>
