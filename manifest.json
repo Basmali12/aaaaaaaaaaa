@@ -1,6 +1,6 @@
 {
-  "name": "تطبيق نور الحسين",
-  "short_name": "نور الحسين",
+  "name": "مجمع أضواء كربلاء",
+  "short_name": "أضواء كربلاء",
   "start_url": "index.html",
   "display": "standalone",
   "background_color": "#1a1a2e",
